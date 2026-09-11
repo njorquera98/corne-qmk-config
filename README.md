@@ -40,25 +40,27 @@ corne-zmk-config/
 |------+------+------+------+------+------|               |------+------+------+------+------+------|
 | Shift|  Z |  X |  C |  V |  B |          |               |          |  N |  M | ,  | .  | /  | Alt  |
 `------+------+------+------+------+------'               `------+------+------+------+------+------'
-                        | GUI |L1/Alt| Space|              |Enter| L2  | ESC |
+                        | GUI | L1 | Space|               |Enter| L2  | ESC |
                         `------------------'               `------------------'
 ```
 
-> El pulgar izquierdo interno es `LT(1, KC_LALT)`: *tap* = Option (Alt izq), *hold* = Layer 1.
+> `Alt` ya está disponible como tecla física fija (esquina inferior derecha, junto a `/`), así que el pulgar `L1` quedó como `MO(1)` simple — nada de tap-hold en la tecla que más se sostiene del teclado. Ver la nota de diseño más abajo.
 
-### Layer 1 - Números y Navegación
+### Layer 1 - Números, Navegación y gestión de ventanas (Rectangle)
 
 ```
-,-----------------------------------------.               ,-----------------------------------------.
-| Tab  |  1 |  2 |  3 |  4 |  5 |          |               |          |  6 |  7 |  8 |  9 |  0 | Bksp |
-|------+------+------+------+------+------|               |------+------+------+------+------+------|
-| Ctrl |Home|    |    |    |    |          |               |          |Left|Down| Up |Right|Del |     |
-|------+------+------+------+------+------|               |------+------+------+------+------+------|
-| Shift|End |    |    |    |    |          |               |          |    |    |    |    |    | GUI  |
-`------+------+------+------+------+------'               `------+------+------+------+------+------'
+,-----------------------------------------.               ,-----------------------------------------------.
+| Tab  |  1  |  2  |  3   |  4   |  5   |               |            |  6  |  7  |  8  |  9  |  0  | Bksp |
+|------+-----+-----+------+------+------|               |------------+-----+-----+-----+-----+-----+------|
+| Ctrl |Home |◧Izq |⬓Abajo|⬒Arriba|◨Der|               |            |Left |Down | Up  |Right|Del  |      |
+|------+-----+-----+------+------+------|               |------------+-----+-----+-----+-----+-----+------|
+| Shift|End  |⛶Max |⌖Centro|↺Restaur|    |               |            |     |     |     |     |     | GUI  |
+`------+-----+-----+------+------+------'               `------------+-----+-----+-----+-----+-----+------'
                         | GUI |TRNS| Space|               |Enter|L3  |RAlt|
                         `------------------'               `------------------'
 ```
+
+Mano izquierda = atajos de [Rectangle](https://rectangleapp.com) (bindings default: `Ctrl+Opt+Flecha` para mitades, `Ctrl+Opt+Enter` maximizar, `Ctrl+Opt+C` centrar, `Ctrl+Opt+Backspace` restaurar), enviados como una sola tecla vía macros `LCTL(LALT(...))` — no hace falta sostener dos modificadores a la vez. El orden S/D/F/G sigue la misma lectura izquierda→derecha que H/J/K/L en la mano derecha (Izq/Abajo/Arriba/Der), solo que mueve la ventana en vez del cursor. La tecla bajo `B` queda libre (`KC_NO`), reservada para una futura capa/combo de [AeroSpace](https://github.com/nikitabobko/AeroSpace).
 
 ### Layer 2 - Símbolos
 
@@ -87,6 +89,14 @@ corne-zmk-config/
                         | GUI |TRNS| Space|               |Enter|TRNS|RAlt|
                         `------------------'               `------------------'
 ```
+
+---
+
+## 🧭 Notas de diseño
+
+* **Por qué `L1` no es tap-hold:** se evaluó `LT(1, KC_LALT)` (tap = Option, hold = Layer 1) en el pulgar interno izquierdo, pero es la tecla que más se *sostiene* del mapa (se usa en casi todos los rolls hacia números/flechas/Home/End). Combinar eso con una resolución tap-hold agrega el `TAPPING_TERM` a cada roll y arriesga que una pulsación breve mande `Alt` en vez de activar la capa. Como `Alt` ya vive en una tecla física fija (esquina inferior derecha de Layer 0), no hacía falta duplicarlo ahí — `L1` volvió a ser `MO(1)` simple.
+* **Por qué macros y no home-row-mods:** para Rectangle/AeroSpace se evaluó agregar modificadores tap-hold en las letras (home row mods), pero cambia mucho la mecánica de tipeo normal. En cambio, los 8 huecos libres de `_LAYER1` (mano izquierda, home row + bottom row) ahora mandan macros `LCTL(LALT(...))` completas en una sola tecla — se gana el atajo sin tocar la capa base ni sostener combinaciones de 3 teclas.
+* **Espacio para AeroSpace:** queda 1 tecla libre en `_LAYER1` (bajo `B`) y toda `_LAYER2`/mano izquierda sigue con `KC_NO` disponibles para cuando se configure.
 
 ---
 
