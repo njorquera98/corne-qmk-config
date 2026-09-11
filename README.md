@@ -3,7 +3,7 @@
 Este repositorio contiene la configuración personalizada del teclado Corne (crkbd) con firmware QMK. Incluye:
 
 * 🔒 Cuatro capas personalizadas (teclas, navegación, símbolos y funciones)
-* 📺 Personalización del OLED (lado derecho)
+* 📺 Personalización de ambos OLED (ícono de capa + logo animado)
 * 🚫 No se utiliza VIA
 * 💡 Pensado para facilitar futuras modificaciones
 
@@ -40,9 +40,11 @@ corne-zmk-config/
 |------+------+------+------+------+------|               |------+------+------+------+------+------|
 | Shift|  Z |  X |  C |  V |  B |          |               |          |  N |  M | ,  | .  | /  | Alt  |
 `------+------+------+------+------+------'               `------+------+------+------+------+------'
-                        | GUI | L1 | Space|               |Enter| L2  | ESC |
+                        | GUI |L1/Alt| Space|              |Enter| L2  | ESC |
                         `------------------'               `------------------'
 ```
+
+> El pulgar izquierdo interno es `LT(1, KC_LALT)`: *tap* = Option (Alt izq), *hold* = Layer 1.
 
 ### Layer 1 - Números y Navegación
 
@@ -90,12 +92,19 @@ corne-zmk-config/
 
 ## 📺 Personalización del OLED
 
-En el directorio `keyboards/crkbd/r2g/` se encuentra el código para mostrar una imagen personalizada en el OLED del lado derecho del teclado:
+El keymap define su propio `oled_task_user()` (en [`keymap.c`](keyboards/crkbd/keymaps/njorquera98/keymap.c)):
 
-* [`r2g.c`](keyboards/crkbd/r2g/r2g.c)
-* [`keyboard.json`](keyboards/crkbd/r2g/keyboard.json)
+* **Mitad master (izquierda, USB):** ícono de la capa activa (Base / Nav / Sym / Fn) + etiqueta de texto.
+* **Mitad derecha:** logo animado propio, 4 frames por temporizador (sin WPM, no reacciona al tipeo).
 
-También se incluye una librería personalizada en `lib/` que gestiona el contenido mostrado: logo, capa activa, RGB, etc.
+Código relacionado:
+
+* [`lib/oled_anim.c`](keyboards/crkbd/lib/oled_anim.c) — bitmaps de íconos + frames de animación y sus renderers.
+* [`lib/layer_state_reader.c`](keyboards/crkbd/lib/layer_state_reader.c) — `read_layer_state()` (usa `get_highest_layer()`).
+* [`keymaps/njorquera98/tools/gen_oled.py`](keyboards/crkbd/keymaps/njorquera98/tools/gen_oled.py) — genera los bytes de `oled_anim.c` (`python3 gen_oled.py` imprime el `.c`; `--preview` dibuja los bitmaps en ASCII).
+* [`r2g.c`](keyboards/crkbd/r2g/r2g.c) — conserva el logo Mechboards R2G como fallback (`weak`).
+
+Los bitmaps (`oled_icon_*`, `oled_anim_frames`) están en formato de página SSD1306, diseñados para `OLED_ROTATION_0`; `crkbd.c` ya rota 180° la mitad no-master.
 
 ---
 

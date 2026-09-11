@@ -18,6 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "quantum.h"
 
+// NOTE: the njorquera98 keymap defines its own oled_task_user() (see
+// keymaps/njorquera98/keymap.c + lib/oled_anim.c) which returns false, so this
+// oled_render_logo() is never reached for that keymap. It is kept as the
+// default Mechboards R2G logo for keymaps that rely on crkbd.c's oled_task_kb().
 #ifdef OLED_ENABLE
 void oled_render_logo(void) {
     static const char PROGMEM mb_logo[] = {
