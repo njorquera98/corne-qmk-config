@@ -1,37 +1,29 @@
 #include <stdio.h>
 #include "action_layer.h"
 
-// in the future, should use (1U<<_LAYER_NAME) instead, but needs to be moved to keymap,c
-#define L_BASE 0
-#define L_LOWER 2
-#define L_RAISE 4
-#define L_ADJUST 8
-#define L_ADJUST_TRI 14
+// This keymap activates its layers in a nested way (MO(3) is pressed from
+// inside layer 1 or layer 2), so layer_state can hold a *sum* of bits
+// (e.g. 0b1010 = 10) that never matches a fixed bitmask.  Use the highest
+// active layer instead and map it to the four real layers of the keymap.
 
 char layer_state_str[24];
 
 const char *read_layer_state(void) {
-  switch (layer_state)
-  {
-  case L_BASE:
-    snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Default");
-    break;
-  case L_RAISE:
-    snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Raise");
-    break;
-  case L_LOWER:
-    snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Lower");
-    break;
-  case L_ADJUST:
-  case L_ADJUST_TRI:
-    snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Adjust");
-    break;
-  default:
-#if defined (LAYER_STATE_32BIT)
-    snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Undef-%ld", layer_state);
-#else
-    snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Undef-%d", layer_state);
-#endif
+  switch (get_highest_layer(layer_state)) {
+    case 0:
+      snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Base");
+      break;
+    case 1:
+      snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Nav");
+      break;
+    case 2:
+      snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Sym");
+      break;
+    case 3:
+      snprintf(layer_state_str, sizeof(layer_state_str), "Layer: Fn");
+      break;
+    default:
+      snprintf(layer_state_str, sizeof(layer_state_str), "Layer: %d", get_highest_layer(layer_state));
   }
 
   return layer_state_str;
