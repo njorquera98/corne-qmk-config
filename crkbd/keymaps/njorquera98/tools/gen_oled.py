@@ -171,8 +171,11 @@ def icon_fn():
 
 
 # ---------------------------------------------------------------- animation
-# 128 x 32 (4 pages), 4 frames.  Original little "signal bot": a rounded head
-# with two eyes that blinks, bobbing over a scrolling wave.  Timer driven.
+# 128 x 32 (4 pages), 3 frames (kept to 3 - not 4 - to leave enough flash for
+# the rest of the keymap on the atmega32u4). Original little "signal bot": a
+# rounded head with two eyes that blinks, bobbing over a scrolling wave.
+# Timer driven.
+ANIM_FRAMES = 3
 
 def wave(g, phase, y0):
     import math
@@ -184,7 +187,7 @@ def wave(g, phase, y0):
 
 def anim_frame(i):
     g = Grid(W, 32)
-    bob = [0, -1, 0, 1][i]
+    bob = [0, -1, 0][i]
     cx = W // 2
     cy = 12 + bob
     # head
@@ -194,12 +197,12 @@ def anim_frame(i):
     # antenna
     g.vline(cx, cy - 14, cy - 10)
     g.disc(cx, cy - 15, 2, fill=True)
-    # eyes: open on frames 0,1,3 ; blink (closed) on frame 2
+    # eyes: open on frames 0,1 ; blink (closed) on frame 2
     if i == 2:
         g.hline(cx - 11, cx - 4, cy)
         g.hline(cx + 4, cx + 11, cy)
     else:
-        look = [-1, 0, 0, 1][i]
+        look = [-1, 1][i]
         g.disc(cx - 7 + look, cy, 3, fill=True)
         g.disc(cx + 7 + look, cy, 3, fill=True)
     # mouth
@@ -225,8 +228,8 @@ def main():
     parts.append("")
     parts.append(emit("oled_icon_fn", icon_fn()))
     parts.append("")
-    frames = [anim_frame(i) for i in range(4)]
-    body = ["const char PROGMEM oled_anim_frames[4][512] = {"]
+    frames = [anim_frame(i) for i in range(ANIM_FRAMES)]
+    body = [f"const char PROGMEM oled_anim_frames[{ANIM_FRAMES}][512] = {{"]
     for fr in frames:
         body.append("    {")
         for j in range(0, len(fr), 16):
@@ -259,7 +262,7 @@ def preview():
     show("NAV", icon_nav(), 24)
     show("SYM", icon_sym(), 24)
     show("FN", icon_fn(), 24)
-    for i in range(4):
+    for i in range(ANIM_FRAMES):
         show(f"ANIM {i}", anim_frame(i), 32)
 
 

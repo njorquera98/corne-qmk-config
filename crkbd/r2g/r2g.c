@@ -20,9 +20,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // NOTE: the njorquera98 keymap defines its own oled_task_user() (see
 // keymaps/njorquera98/keymap.c + lib/oled_anim.c) which returns false, so this
-// oled_render_logo() is never reached for that keymap. It is kept as the
-// default Mechboards R2G logo for keymaps that rely on crkbd.c's oled_task_kb().
-#ifdef OLED_ENABLE
+// oled_render_logo() is never reached for that keymap. Its 512-byte bitmap
+// was still being linked in unconditionally though (non-static, called from
+// crkbd.c's oled_task_kb), which pushed njorquera98 over the atmega32u4 flash
+// limit. Keymaps that want to opt out (because they provide their own OLED
+// task) can '#define R2G_OLED_LOGO_DISABLE' in their config.h; when they do,
+// crkbd.c's own weak oled_render_logo() (which reuses the existing OLED font
+// glyphs instead of a dedicated bitmap) is used as the link-time fallback -
+// harmless, since it's just as unreachable.
+#if defined(OLED_ENABLE) && !defined(R2G_OLED_LOGO_DISABLE)
 void oled_render_logo(void) {
     static const char PROGMEM mb_logo[] = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,

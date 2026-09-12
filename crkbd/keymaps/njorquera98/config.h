@@ -26,6 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define TAPPING_TERM 100
 #define MASTER_LEFT
 
+// This keymap draws its own OLED screens (see keymap.c's oled_task_user() +
+// lib/oled_anim.c), so r2g.c's default 512-byte Mechboards logo bitmap is
+// dead weight - it was pushing the firmware over the atmega32u4 flash limit.
+#define R2G_OLED_LOGO_DISABLE
+
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING
     #define RGBLIGHT_EFFECT_RAINBOW_MOOD
