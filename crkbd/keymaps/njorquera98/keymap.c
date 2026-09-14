@@ -25,13 +25,28 @@ enum custom_keycodes {
 #define RECT_CENTER  LCTL(LALT(KC_C))      // Center
 #define RECT_RESTORE LCTL(LALT(KC_BSPC))   // Restore / undo last resize
 
+// macOS word/line editing. Cmd (GUI) only lives on the left thumb, which is
+// also what holds _LAYER1 - so Cmd+Arrow (line start/end, doc start/end) is
+// otherwise unreachable (same thumb can't hold two keys at once). _LAYER2 is
+// held with the RIGHT thumb instead, leaving the left hand free to send these
+// as single-key macros. Lives on _LAYER2's left hand (was all KC_NO).
+#define MAC_DOC_START  LGUI(KC_UP)     // Cmd+Up    - document start
+#define MAC_DOC_END    LGUI(KC_DOWN)   // Cmd+Down  - document end
+#define MAC_WORD_LEFT  LALT(KC_LEFT)   // Opt+Left  - word left
+#define MAC_WORD_RIGHT LALT(KC_RIGHT)  // Opt+Right - word right
+#define MAC_LINE_START LGUI(KC_LEFT)   // Cmd+Left  - line start
+#define MAC_LINE_END   LGUI(KC_RIGHT)  // Cmd+Right - line end
+#define MAC_DEL_WORD   LALT(KC_BSPC)   // Opt+Backspace - delete word back
+#define MAC_DEL_LINE   LGUI(KC_BSPC)   // Cmd+Backspace - delete line back
+#define MAC_DEL_WORD_F LALT(KC_DEL)    // Opt+Delete    - delete word forward
+
  const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
  [_LAYER0] = LAYOUT(KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Y, KC_U, KC_I, KC_O, KC_P, KC_BSPC, KC_LCTL, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT, KC_LSFT, KC_Z, KC_X, KC_C, KC_V, KC_B, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_LALT, KC_LGUI, MO(1), KC_SPC, KC_ENT, MO(2), KC_ESC),
 
 [_LAYER1] = LAYOUT(KC_TAB, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_BSPC, KC_LCTL, KC_HOME, RECT_LEFT, RECT_DOWN, RECT_UP, RECT_RIGHT, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, KC_NO, KC_DEL, KC_LSFT, KC_END, RECT_MAX, RECT_CENTER, RECT_RESTORE, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_TRNS, KC_SPC, KC_ENT, MO(3), KC_RALT),
 
-[_LAYER2] = LAYOUT(KC_TAB, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC, KC_LCTL, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_MINS, KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS, KC_GRV, KC_LSFT, KC_NO, KC_NO, KC_NO, KC_NO, KC_NO, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD, KC_LGUI, MO(3), KC_SPC, KC_ENT, KC_TRNS, KC_RALT),
+[_LAYER2] = LAYOUT(KC_TAB, KC_EXLM, KC_AT, KC_HASH, KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC, KC_LCTL, MAC_DOC_START, MAC_WORD_LEFT, MAC_WORD_RIGHT, MAC_LINE_START, MAC_LINE_END, KC_MINS, KC_EQL, KC_LBRC, KC_RBRC, KC_BSLS, KC_GRV, KC_LSFT, MAC_DOC_END, MAC_DEL_WORD, MAC_DEL_LINE, MAC_DEL_WORD_F, KC_NO, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD, KC_LGUI, MO(3), KC_SPC, KC_ENT, KC_TRNS, KC_RALT),
 
 [_LAYER3] = LAYOUT(QK_BOOT, KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, RM_TOGG, RM_HUEU, RM_SATU, RM_VALU, KC_BRIU, KC_NO, KC_VOLU, KC_MPLY, KC_MPRV, KC_NO, KC_NO, KC_MUTE, RM_NEXT, RM_HUED, RM_SATD, RM_VALD, KC_BRID, KC_NO, KC_VOLD, KC_MSTP, KC_MNXT, KC_NO, KC_NO, KC_NO, KC_LGUI, KC_TRNS, KC_SPC, KC_ENT, KC_TRNS, KC_RALT)
 
